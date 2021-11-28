@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false"> <!--when scan is true, if configuration files changed, they will be reload-->
+    <!--scanPeriod: 设置监测配置文件是否有修改时间的时间间隔，如果有修改就自动reload, 默认单位是毫秒 ， scan 是true的时候这个属性生效 , -->
+    <!--debug: 如果debug是true， 就会输出logback内部的星系， logback非常稳定，我们不希望这些信息干扰业务日志的信息-->
+    <!--定义常量参数-->
+    <!--日志是有级别的， 分别是 TRACE < DEBUG < INFO < WARN < ERROR -->
+    <!-- 如果你指定log的级别是INFO，那么TRACE 和 DEBUG在日志里面是无法显示的 -->
+    <property name="log.level" value="debug"/>
+    <property name="log.maxHistory" value="30"/>
+    <property name="log.filePath" value="${catalina.base}/logs/webapps" /> <!--log 的存放位置 -->
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thead] %-5level %logger{50} - %msg%n" /> <!--时间 线程 级别 package.class 信息 换行-->
+
+    <!--Console -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    <!--DEBUG-->
+    <appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--文件路径-->
+        <file>${log.filePath}/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件名称-->
+            <fileNamePattern>${log.filePath}/debug/debug.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!--文件最大保存历史数量-->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <encoder>
+                <pattern>${log.pattern}</pattern>
+            </encoder>
+            <!--只保留debug 相关的信息-->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>DEBUG</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+        </rollingPolicy>
+    </appender>
+    <!--INFO-->
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--文件路径-->
+        <file>${log.filePath}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件名称-->
+            <fileNamePattern>${log.filePath}/info/info.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!--文件最大保存历史数量-->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <encoder>
+                <pattern>${log.pattern}</pattern>
+            </encoder>
+            <!--只保留info 相关的信息-->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>INFO</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+        </rollingPolicy>
+    </appender>
+    <!--ERROR-->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--文件路径-->
+        <file>${log.filePath}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件名称-->
+            <fileNamePattern>${log.filePath}/error/error.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!--文件最大保存历史数量-->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <encoder>
+                <pattern>${log.pattern}</pattern>
+            </encoder>
+            <!--只保留error 相关的信息-->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+        </rollingPolicy>
+    </appender>
+    <!--additivity 如果为true就会将root里面的appender 继承，也就是说，不只我们定义的debug， info， error， 还有console -->
+    <logger name="com.imooc.o2o" level="${log.level}" additivity="true"> <!-- 用来存放日志对象，同时告诉logback 关注那个人package下的信息，由name确定。这里com.imooc.o2o-->
+        <appender-ref ref="debugAppender"/> <!--log 需要和appender 绑定， 这里绑定前面定义的三个-->
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </logger> <!--如果level 没有指定，就会默认继承下面的root的level-->
+    <root level="info"> <!--特殊的log， 根log-->
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>
+

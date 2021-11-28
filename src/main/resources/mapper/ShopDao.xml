@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--useGeneratedKeys="true" means once insert successfully, use jdbc to get the primary key and insert to object -->
+<!--because when we add store, we also need to save store's pic, we need the primary key to distinguish different stores-->
+<mapper namespace="com.imooc.o2o.dao.ShopDao">
+    <!--keyColumn indicate primary key, keyProperty means which property the key primary corresponds to-->
+    <!--useGeneratedKeys 就是mybatis-config.xml 里面的那个，为true的时候表明，使用 jdbc的 getGeneratedKeys获取数据库的自增主键值 -->
+    <insert id="insertDao" useGeneratedKeys="true" keyColumn="shop_id" keyProperty="shopId">
+
+    </insert>
+</mapper>
