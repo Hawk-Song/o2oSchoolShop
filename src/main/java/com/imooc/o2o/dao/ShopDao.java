@@ -9,4 +9,11 @@ public interface ShopDao {
      * @return
      */
     int insertShop(Shop shop);
+
+    /**
+     * update shop
+     * @param shop
+     * @return
+     */
+    int updateShop(Shop shop);
 }
